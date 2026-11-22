@@ -1,0 +1,5 @@
+[run]
+source = quality_platform
+omit = */quality_platform/run.py
+[report]
+show_missing = True

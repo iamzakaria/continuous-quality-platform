@@ -1,0 +1,57 @@
+name: Portfolio integration gate
+# Publish all five named repositories under the same owner before dispatching.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  portfolio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/enterprise-test-automation
+          path: workspace/enterprise-test-automation
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/ai-test-case-generator
+          path: workspace/ai-test-case-generator
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/healthcare-qa-framework
+          path: workspace/healthcare-qa-framework
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/performance-engineering-lab
+          path: workspace/performance-engineering-lab
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          path: workspace/continuous-quality-platform
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: grafana/setup-k6-action@v1
+        with:
+          k6-version: '2.4.0'
+      - name: Install the portfolio verification dependencies
+        run: |
+          python -m pip install -r workspace/enterprise-test-automation/requirements.lock
+          python -m pip install -r workspace/ai-test-case-generator/requirements-dev.lock
+          python -m pip install -r workspace/healthcare-qa-framework/requirements-dev.lock
+          python -m pip install -r workspace/continuous-quality-platform/requirements-dev.lock
+          python -m playwright install --with-deps chromium
+          npm ci --prefix workspace/ai-test-case-generator/frontend
+      - name: Execute all repositories and enforce the aggregate gate
+        working-directory: workspace/continuous-quality-platform
+        run: PYTHONPATH=src python -m quality_platform.run --workspace .. --python "$(command -v python)"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: portfolio-quality-evidence
+          path: workspace/*/artifacts/
+          retention-days: 7

@@ -1,0 +1,25 @@
+name: SonarQube analysis
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  sonar:
+    # Use a trusted runner that can reach the configured SonarQube server.
+    runs-on: self-hosted
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Test and collect coverage
+        run: |
+          python3.12 -m venv .venv
+          .venv/bin/python -m pip install -r requirements-dev.lock
+          .venv/bin/python -m pip install --no-deps -e .
+          .venv/bin/python -m pytest --cov=quality_platform --cov-report=xml:artifacts/coverage.xml
+      - name: Analyze and wait for server quality gate
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+        run: bash scripts/sonar-scan.sh "$PWD"

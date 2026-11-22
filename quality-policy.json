@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0",
+  "checks": [
+    {
+      "name": "enterprise-test-automation",
+      "kind": "junit",
+      "path": "enterprise-test-automation/artifacts/junit.xml",
+      "min_tests": 16,
+      "max_skipped": 0
+    },
+    {
+      "name": "ai-test-case-generator",
+      "kind": "junit",
+      "path": "ai-test-case-generator/artifacts/junit.xml",
+      "min_tests": 36,
+      "max_skipped": 0
+    },
+    {
+      "name": "healthcare-qa-framework",
+      "kind": "junit",
+      "path": "healthcare-qa-framework/artifacts/junit.xml",
+      "min_tests": 20,
+      "max_skipped": 0
+    },
+    {
+      "name": "continuous-quality-platform",
+      "kind": "junit",
+      "path": "continuous-quality-platform/artifacts/junit.xml",
+      "min_tests": 24,
+      "max_skipped": 0
+    },
+    {
+      "name": "performance-engineering-lab",
+      "kind": "junit",
+      "path": "performance-engineering-lab/artifacts/junit.xml",
+      "min_tests": 11,
+      "max_skipped": 0
+    },
+    {
+      "name": "ai-test-case-generator coverage",
+      "kind": "coverage",
+      "path": "ai-test-case-generator/artifacts/coverage.xml",
+      "minimum": 70
+    },
+    {
+      "name": "healthcare-qa-framework coverage",
+      "kind": "coverage",
+      "path": "healthcare-qa-framework/artifacts/coverage.xml",
+      "minimum": 70
+    },
+    {
+      "name": "continuous-quality-platform coverage",
+      "kind": "coverage",
+      "path": "continuous-quality-platform/artifacts/coverage.xml",
+      "minimum": 70
+    },
+    {
+      "name": "healthcare k6 smoke",
+      "kind": "performance",
+      "path": "performance-engineering-lab/artifacts/k6-summary.json"
+    }
+  ]
+}
